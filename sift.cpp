@@ -47,31 +47,29 @@ int main(int argc, char** argv) {
             } else if (interpreted == "q") {
                 running = false;
             } else if (interpreted == "up") {
-                if (consolevectorhandler::getCurrentSelected() < getTerminalSize(0)) {
-                    std::vector<std::string> filesindir = getContentsInDir(filedirectory);
-                    consolevectorhandler::changeSelection(consolevectorhandler::getCurrentSelected() - 1, filesindir.size());
-                    consolevectorhandler::clearConsoleVector();
-                    int terminalSize = getTerminalSize(0) - 1;
-                    for (int i = 0; i < terminalSize && (i + consolevectorhandler::getCurrentSelected()) < filesindir.size(); i++) {
-                        consolevectorhandler::addToVector(filesindir[i + consolevectorhandler::getCurrentSelected()]);
-                    }
-                    consolevectorhandler::updateScreen(consolevectorhandler::getCurrentSelected());
-                } else {
-                    consolevectorhandler::resetCurentSelected();
+                std::vector<std::string> filesindir = getContentsInDir(filedirectory);
+                int total = filesindir.size();
+                int current = consolevectorhandler::getCurrentSelected();
+                int newSelection = (current - 1 + total) % total;
+                consolevectorhandler::changeSelection(newSelection, total);
+                consolevectorhandler::clearConsoleVector();
+                int terminalSize = getTerminalSize(0) - 1;
+                for (int i = 0; i < terminalSize && (i + consolevectorhandler::getCurrentSelected()) < total; i++) {
+                    consolevectorhandler::addToVector(filesindir[i + consolevectorhandler::getCurrentSelected()]);
                 }
+                consolevectorhandler::updateScreen(consolevectorhandler::getCurrentSelected());
             } else if (interpreted == "down") {
-                if (consolevectorhandler::getCurrentSelected() < getTerminalSize(0)) {
-                    std::vector<std::string> filesindir = getContentsInDir(filedirectory);
-                    consolevectorhandler::changeSelection(consolevectorhandler::getCurrentSelected() + 1, filesindir.size());
-                    consolevectorhandler::clearConsoleVector();
-                    int terminalSize = getTerminalSize(0) - 1;
-                    for (int i = 0; i < terminalSize && (i + consolevectorhandler::getCurrentSelected()) < filesindir.size(); i++) {
-                        consolevectorhandler::addToVector(filesindir[i + consolevectorhandler::getCurrentSelected()]);
-                    }
-                    consolevectorhandler::updateScreen(consolevectorhandler::getCurrentSelected());
-                } else {
-                    consolevectorhandler::resetCurentSelected();
+                std::vector<std::string> filesindir = getContentsInDir(filedirectory);
+                int total = filesindir.size();
+                int current = consolevectorhandler::getCurrentSelected();
+                int newSelection = (current + 1) % total;
+                consolevectorhandler::changeSelection(newSelection, total);
+                consolevectorhandler::clearConsoleVector();
+                int terminalSize = getTerminalSize(0) - 1;
+                for (int i = 0; i < terminalSize && (i + consolevectorhandler::getCurrentSelected()) < total; i++) {
+                    consolevectorhandler::addToVector(filesindir[i + consolevectorhandler::getCurrentSelected()]);
                 }
+                consolevectorhandler::updateScreen(consolevectorhandler::getCurrentSelected());
                 log(std::to_string(consolevectorhandler::getCurrentSelected()));
             } else if (interpreted == "enter") {
                 std::string previousFileDirectory = filedirectory;
