@@ -19,8 +19,8 @@ namespace consolevectorhandler {
             scroll = 0;
         }
         std::cout << "\033[H\033[J"; // Clear screen
-        for (std::size_t i = 0 + startpoint; i < consoleVector.size(); i++) {
-            if (i == selectedFile) {
+        for (std::size_t i = 0; i < consoleVector.size(); i++) {
+            if (i + startpoint == selectedFile) {
                 std::cout << "\033[30m\033[47m" << consoleVector[i] << "\x1b[0m\n";  // Highlight selection
             } else {
                 std::cout << consoleVector[i] << "\n";
@@ -35,7 +35,6 @@ namespace consolevectorhandler {
         return consoleVector[selectedFile];
     }
     int getCurrentSelected() {
-        log(std::to_string(selectedFile));
         return selectedFile;
     }
     void changeSelection(int newSelectionItem, int maxSelection) {

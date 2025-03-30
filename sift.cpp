@@ -18,9 +18,9 @@ int main(int argc, char** argv) {
     }
     else {
         #ifdef _WIN32
-        filedirectory = "C:";
+            filedirectory = "C:/";
         #else
-        filedirectory = "/home/";
+            filedirectory = "/home/";
         #endif
     }
 
@@ -48,16 +48,31 @@ int main(int argc, char** argv) {
                 running = false;
             } else if (interpreted == "up") {
                 if (consolevectorhandler::getCurrentSelected() < getTerminalSize(0)) {
-                    consolevectorhandler::changeSelection(consolevectorhandler::getCurrentSelected() - 1, consolevectorhandler::getVectorLength());
+                    std::vector<std::string> filesindir = getContentsInDir(filedirectory);
+                    consolevectorhandler::changeSelection(consolevectorhandler::getCurrentSelected() - 1, filesindir.size());
+                    consolevectorhandler::clearConsoleVector();
+                    int terminalSize = getTerminalSize(0) - 1;
+                    for (int i = 0; i < terminalSize && (i + consolevectorhandler::getCurrentSelected()) < filesindir.size(); i++) {
+                        consolevectorhandler::addToVector(filesindir[i + consolevectorhandler::getCurrentSelected()]);
+                    }
+                    consolevectorhandler::updateScreen(consolevectorhandler::getCurrentSelected());
                 } else {
                     consolevectorhandler::resetCurentSelected();
                 }
             } else if (interpreted == "down") {
                 if (consolevectorhandler::getCurrentSelected() < getTerminalSize(0)) {
-                    consolevectorhandler::changeSelection(consolevectorhandler::getCurrentSelected() + 1, consolevectorhandler::getVectorLength());
+                    std::vector<std::string> filesindir = getContentsInDir(filedirectory);
+                    consolevectorhandler::changeSelection(consolevectorhandler::getCurrentSelected() + 1, filesindir.size());
+                    consolevectorhandler::clearConsoleVector();
+                    int terminalSize = getTerminalSize(0) - 1;
+                    for (int i = 0; i < terminalSize && (i + consolevectorhandler::getCurrentSelected()) < filesindir.size(); i++) {
+                        consolevectorhandler::addToVector(filesindir[i + consolevectorhandler::getCurrentSelected()]);
+                    }
+                    consolevectorhandler::updateScreen(consolevectorhandler::getCurrentSelected());
                 } else {
                     consolevectorhandler::resetCurentSelected();
                 }
+                log(std::to_string(consolevectorhandler::getCurrentSelected()));
             } else if (interpreted == "enter") {
                 std::string previousFileDirectory = filedirectory;
                 log("the previous file directory is: " + previousFileDirectory);
